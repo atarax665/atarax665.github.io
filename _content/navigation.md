@@ -1,0 +1,21 @@
+---
+navigation:
+  - name: "About"
+    href: "/about"
+    icon: ""
+  - name: "Blog"
+    href: "/blog"
+    icon: ""
+  - name: "Now"
+    href: "/now"
+    icon: ""
+  - name: "Bookshelf"
+    href: "/bookshelf"
+    icon: ""
+  - name: "Workout"
+    href: "/workout"
+    icon: ""
+  - name: "Contact"
+    href: "/contact"
+    icon: ""
+---
