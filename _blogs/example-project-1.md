@@ -1,7 +1,7 @@
 ---
 title: Finally JSON_TABLE() is here
 slug: JSON_TABLE
-date: September 8, 2024
+date: September 9, 2024
 description: All that you should know about Postresql JSON support enhancement.
 photo: /projects/example-project-1.jpg
 ---
