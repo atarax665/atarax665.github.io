@@ -31,13 +31,16 @@ jobs:
       - name: Build Next.js app
         run: npm run build
 
+      - name: List Directory
+        run: ls -R
+
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./out
+          path: ./build
 
       - name: Deploy to GitHub Pages
         id: deployment
