@@ -37,9 +37,15 @@ const Em = ({ children }: { children: React.ReactNode }) => (
 );
 
 const Code = ({ children }: { children: React.ReactNode }) => (
-  <code className="bg-gray-100 px-1 py-0.5 rounded text-sm font-mono">
+  <code className="bg-gray-100 text-gray-800 px-1 py-0.5 rounded text-sm font-mono">
     {children}
   </code>
+);
+
+const Pre = ({ children }: { children: React.ReactNode }) => (
+  <pre className="bg-gray-50 border border-gray-200 rounded-lg p-4 overflow-x-auto text-sm font-mono text-gray-800 my-4 leading-relaxed">
+    {children}
+  </pre>
 );
 
 const Del = ({ children }: { children: React.ReactNode }) => (
@@ -57,6 +63,7 @@ export const renderMarkdownToHTML = (markup: string) => {
         strong: Strong,
         em: Em,
         code: Code,
+        pre: Pre,
         del: Del,
       }}
     >

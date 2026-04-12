@@ -19,19 +19,11 @@ export type GridItemData = {
 const GridItem = ({ item }: { item: GridItemData }) => {
   const sizeClasses = {
     small: "col-span-1",
-    medium: "col-span-2",
-    large: "col-span-2 md:col-span-3",
+    medium: "col-span-2 row-span-2",
+    large: "col-span-2 md:col-span-3 row-span-2",
   };
 
-  const aspectClasses = {
-    small: "aspect-square",
-    medium: "aspect-[4/3]",
-    large: "aspect-[4/3]",
-  };
-
-  const baseClasses = `${sizeClasses[item.size || "small"]} ${
-    aspectClasses[item.size || "small"]
-  } hover:opacity-75 transition-opacity relative z-10`;
+  const baseClasses = `${sizeClasses[item.size || "small"]} hover:opacity-75 transition-opacity relative z-10`;
 
   const content = (
     <div className="w-full h-full flex flex-col relative overflow-hidden rounded-lg">

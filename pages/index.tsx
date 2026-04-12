@@ -123,7 +123,7 @@ export default function Home({
         </div>
 
         {/* Grid Section */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-3 lg:gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 auto-rows-[140px] lg:auto-rows-[160px] gap-3 lg:gap-4 grid-flow-dense">
           {filteredItems.map((item, index) => (
             <GridItem key={item.id} item={item} />
           ))}

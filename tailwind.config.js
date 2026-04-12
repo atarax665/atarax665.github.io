@@ -67,6 +67,37 @@ module.exports = {
               marginTop: '2rem',
               marginBottom: '2rem',
             },
+            pre: {
+              backgroundColor: '#F9FAFB', // gray-50
+              color: '#1F2937', // gray-800
+              borderRadius: '0.5rem',
+              padding: '1rem',
+              overflowX: 'auto',
+              fontSize: '13px',
+              lineHeight: '1.7',
+              border: '1px solid #E5E7EB', // gray-200
+              marginTop: '1rem',
+              marginBottom: '1rem',
+            },
+            code: {
+              backgroundColor: '#F3F4F6', // gray-100
+              color: '#1F2937', // gray-800
+              borderRadius: '0.25rem',
+              padding: '0.125rem 0.375rem',
+              fontWeight: '400',
+              fontSize: '13px',
+              '&::before': { content: 'none' },
+              '&::after': { content: 'none' },
+            },
+            'pre code': {
+              backgroundColor: 'transparent',
+              borderRadius: '0',
+              padding: '0',
+              color: 'inherit',
+              fontSize: 'inherit',
+              '&::before': { content: 'none' },
+              '&::after': { content: 'none' },
+            },
           },
         },
       },
