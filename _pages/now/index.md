@@ -2,7 +2,7 @@
 title: "Now"
 description: "What I'm focused on right now"
 slug: "now"
-lastUpdated: "2025-06-13"
+lastUpdated: "2026-04-12"
 ---
 
 # What I'm Doing Now

@@ -6,5 +6,5 @@ email: "itsatarax@gmail.com"
 linkedin: "https://linkedin.com/in/atarax"
 github: "https://github.com/atarax665"
 twitter: "https://twitter.com/itsatarax"
-avatar: "/avatar.jpg"
+avatar: "/avatar.jpeg"
 ---

@@ -14,6 +14,7 @@ export type GridItemData = {
   content?: string;
   date?: string;
   size?: "small" | "medium" | "large";
+  onClick?: () => void;
 };
 
 const GridItem = ({ item }: { item: GridItemData }) => {
@@ -89,6 +90,20 @@ const GridItem = ({ item }: { item: GridItemData }) => {
     </div>
   );
 
+  // onClick + href: intercept navigation (e.g. photo modal). href still
+  // present so right-click → "Open in new tab" keeps working.
+  if (item.href && item.onClick) {
+    return (
+      <a
+        href={item.href}
+        className={baseClasses}
+        onClick={(e) => { e.preventDefault(); item.onClick!(); }}
+      >
+        {content}
+      </a>
+    );
+  }
+
   if (item.href) {
     return (
       <Link href={item.href} className={baseClasses}>
@@ -97,7 +112,14 @@ const GridItem = ({ item }: { item: GridItemData }) => {
     );
   }
 
-  return <div className={baseClasses}>{content}</div>;
+  return (
+    <div
+      className={`${baseClasses}${item.onClick ? " cursor-pointer" : ""}`}
+      onClick={item.onClick}
+    >
+      {content}
+    </div>
+  );
 };
 
 export default GridItem;

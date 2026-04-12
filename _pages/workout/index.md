@@ -2,7 +2,7 @@
 title: "Workout"
 description: "My fitness routine and progress"
 slug: "workout"
-lastUpdated: "2025-06-13"
+lastUpdated: "2026-04-12"
 ---
 
 # Workout & Fitness

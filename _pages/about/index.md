@@ -2,7 +2,7 @@
 title: "About"
 description: "Background, skills, and experience"
 slug: "about"
-lastUpdated: "2025-06-13"
+lastUpdated: "2026-04-12"
 ---
 
 Hey, I’m Abhinav Anand. I’m currently a **software engineer - 2** on the **Instamart B2B** team at **Swiggy**. There, I focus on building a product to empower kirana store owners and ease the procurement flow for them. I work **remotely** from my home at **Patna, Bihar**.

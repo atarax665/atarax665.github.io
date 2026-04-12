@@ -2,7 +2,7 @@
 title: "Bookshelf"
 description: "Books I'm reading and recommend"
 slug: "bookshelf"
-lastUpdated: "2025-06-13"
+lastUpdated: "2026-04-12"
 ---
 
 # Bookshelf
