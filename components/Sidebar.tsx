@@ -1,7 +1,9 @@
 import React from "react";
-import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/router";
+import Img from "./Img";
+import Nav from "./Nav";
+import ThemeToggle from "./ThemeToggle";
+import type { ImageRecord } from "../utils/images";
 
 export type PersonalInfo = {
   name: string;
@@ -22,91 +24,76 @@ export type NavigationItem = {
 
 export type SidebarData = {
   personalInfo: PersonalInfo;
+  /** Build-time encoded variants for personalInfo.avatar */
+  avatarImage: ImageRecord | null;
   navigation: NavigationItem[];
   aboutContent: string;
 };
 
+const mailto = (email: string) =>
+  email.startsWith("mailto:") ? email : `mailto:${email}`;
+
 const Sidebar = ({ data }: { data: SidebarData }) => {
-  const router = useRouter();
-  const { personalInfo, navigation } = data;
+  const { personalInfo, navigation, avatarImage } = data;
 
   return (
-    <div className="hidden lg:block w-80 min-h-screen bg-white p-8 flex flex-col gap-8 fixed left-0 top-0 overflow-y-auto border-r border-gray-100">
-      {/* Personal Info */}
-      <div className="flex flex-col gap-4">
-        <Link
-          href="/"
-          className="w-16 h-16 rounded-full overflow-hidden bg-gray-100"
-        >
-          <Image
-            src={personalInfo.avatar}
+    <aside className="fixed left-0 top-0 hidden h-screen w-72 flex-col justify-between overflow-y-auto border-r border-line bg-bg p-8 lg:flex">
+      <div>
+        <Link href="/" className="inline-block">
+          <Img
+            record={avatarImage}
             alt={personalInfo.name}
-            width={64}
-            height={64}
-            className="w-full h-full object-cover"
+            ratio={false}
             priority
+            className="h-14 w-14 rounded-full"
+            sizes="56px"
           />
         </Link>
-        <div>
-          <h1 className="text-sm text-gray-900">{personalInfo.name}</h1>
-          <p className="text-sm text-gray-600">{personalInfo.title}</p>
-          <p className="text-sm text-gray-500">{personalInfo.location}</p>
+
+        <h1 className="font-display mt-4 text-[21px] leading-tight text-ink">
+          {personalInfo.name}
+        </h1>
+        <p className="mt-0.5 text-sm text-muted">{personalInfo.title}</p>
+        <p className="meta mt-2">{personalInfo.location}</p>
+
+        <div className="mt-8">
+          <Nav items={navigation} />
         </div>
       </div>
 
-      {/* Navigation */}
-      <nav className="flex flex-col gap-1 mt-4">
-        {navigation.map((item) => {
-          const isActive =
-            router.pathname === item.href ||
-            (item.href === "/blog" && router.pathname.startsWith("/blog"));
-
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={`py-2 text-sm transition-colors ${
-                isActive
-                  ? "text-gray-900 underline"
-                  : "text-gray-600 hover:text-gray-900"
-              }`}
+      <div className="mt-10 border-t border-line pt-5">
+        <div className="flex flex-col gap-1.5">
+          <a
+            href={mailto(personalInfo.email)}
+            className="text-sm text-muted transition-colors duration-fast ease-out hover:text-ink"
+          >
+            {personalInfo.email}
+          </a>
+          <div className="flex gap-4">
+            <a
+              href={personalInfo.github}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="meta transition-colors duration-fast ease-out hover:text-ink"
             >
-              {item.name}
-            </Link>
-          );
-        })}
-      </nav>
+              GitHub
+            </a>
+            <a
+              href={personalInfo.linkedin}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="meta transition-colors duration-fast ease-out hover:text-ink"
+            >
+              LinkedIn
+            </a>
+          </div>
+        </div>
 
-      {/* Contact Links */}
-      <div className="flex flex-col gap-1 pt-4 border-t border-gray-100">
-        <a
-          href={
-            personalInfo.email.startsWith("mailto:")
-              ? personalInfo.email
-              : `mailto:${personalInfo.email}`
-          }
-          className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
-        >
-          {personalInfo.email}
-        </a>
-        <a
-          href={personalInfo.linkedin}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
-        >
-          LinkedIn
-        </a>
-        <a
-          href={personalInfo.github}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
-        >
-          GitHub
-        </a>
+        <div className="mt-4">
+          <ThemeToggle className="-ml-1.5" />
+        </div>
       </div>
-    </div>
+    </aside>
   );
 };
 

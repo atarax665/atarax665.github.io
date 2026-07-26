@@ -1,6 +1,8 @@
 import React, { useState } from "react";
+import { AnimatePresence, motion } from "motion/react";
 import MainLayout from "../layouts/MainLayout";
 import GridItem, { GridItemData } from "../components/GridItem";
+import Masonry from "../components/Masonry";
 import PhotoModal from "../components/PhotoModal";
 import {
   getSidebarData,
@@ -11,6 +13,7 @@ import {
 import { SidebarData } from "../components/Sidebar";
 import { BlogPost } from "../layouts/BlogPost";
 import { Photo, PhotoMeta } from "../layouts/PhotoLayout";
+import { LAYOUT_SPRING } from "../lib/motion";
 
 export async function getStaticProps() {
   const [sidebarData, blogPosts, photos, homeIntro] = await Promise.all([
@@ -20,17 +23,16 @@ export async function getStaticProps() {
     getHomeIntro(),
   ]);
 
-  return {
-    props: {
-      sidebarData,
-      blogPosts,
-      photos,
-      homeIntro,
-    },
-  };
+  return { props: { sidebarData, blogPosts, photos, homeIntro } };
 }
 
 type FilterType = "everything" | "photos" | "articles";
+
+const FILTERS: { key: FilterType; label: string }[] = [
+  { key: "everything", label: "Everything" },
+  { key: "photos", label: "Photographs" },
+  { key: "articles", label: "Writing" },
+];
 
 export default function Home({
   sidebarData,
@@ -48,96 +50,94 @@ export default function Home({
 
   const photoMetas = photos.map((p) => p.meta);
 
-  // Photo grid items — keep href for right-click "open in new tab",
-  // onClick intercepts normal clicks to open the modal instead.
-  const photoItems: GridItemData[] = photos.map((photo, index) => ({
+  const photoItems: GridItemData[] = photos.map((photo) => ({
     id: `photo-${photo.meta.slug}`,
     type: "photo" as const,
     image: photo.meta.image,
+    imageRecord: photo.meta.imageRecord,
     title: photo.meta.title,
     href: `/photos/${photo.meta.slug}`,
-    size: index === 0 ? ("medium" as const) : ("small" as const),
     onClick: () => setSelectedPhoto(photo.meta),
   }));
 
-  const blogItems: GridItemData[] = blogPosts.map((post, index) => ({
-    id: `blog-${index}`,
+  const blogItems: GridItemData[] = blogPosts.map((post) => ({
+    id: `blog-${post.meta.slug}`,
     type: "blog" as const,
     title: post.meta.title,
     description: post.meta.description,
     date: post.meta.date,
     href: `/blog/${post.meta.slug}`,
-    size: index === 0 ? ("medium" as const) : ("small" as const),
   }));
 
-  const getFilteredItems = (): GridItemData[] => {
-    switch (activeFilter) {
-      case "photos":
-        return photoItems;
-      case "articles":
-        return blogItems;
-      default: {
-        const allItems = [...photoItems, ...blogItems];
-        return allItems.sort((a, b) => {
-          if (a.size === "medium" && b.size !== "medium") return -1;
-          if (b.size === "medium" && a.size !== "medium") return 1;
-          return 0;
-        });
-      }
-    }
-  };
-
-  const filteredItems = getFilteredItems();
+  const items =
+    activeFilter === "photos"
+      ? photoItems
+      : activeFilter === "articles"
+        ? blogItems
+        : [...blogItems, ...photoItems];
 
   return (
     <MainLayout sidebarData={sidebarData}>
       <div className="max-w-6xl">
-        {/* Introduction */}
-        <div className="mb-8 lg:mb-[200px] mt-4 lg:mt-[50px]">
+        {/* Opening statement */}
+        <section className="mb-20 mt-2 lg:mb-32 lg:mt-10">
           <div
-            className="text-sm text-gray-900 w-full lg:w-[700px]"
+            className="font-display max-w-[680px] text-[24px] leading-[1.45] text-ink lg:text-[27px] [&_a]:text-accent [&_a]:underline [&_a]:underline-offset-4 [&_strong]:font-normal"
             dangerouslySetInnerHTML={{ __html: homeIntro.renderedContent }}
           />
-        </div>
+        </section>
 
-        {/* Filter tabs */}
-        <div className="mb-6">
-          <nav className="flex space-x-4 lg:space-x-6 overflow-x-auto">
-            {[
-              { key: "everything" as const, label: "Everything" },
-              { key: "photos" as const, label: "Photos" },
-              { key: "articles" as const, label: "Articles" },
-            ].map(({ key, label }) => (
+        {/* Filters */}
+        <div className="mb-6 flex items-baseline justify-between border-b border-line">
+          <nav className="no-scrollbar flex gap-6 overflow-x-auto" aria-label="Filter">
+            {FILTERS.map(({ key, label }) => (
               <button
                 key={key}
                 onClick={() => setActiveFilter(key)}
-                className={`text-sm transition-colors whitespace-nowrap pb-2 ${
-                  activeFilter === key
-                    ? "text-gray-900 border-b border-gray-900"
-                    : "text-gray-600 hover:text-gray-900"
+                aria-pressed={activeFilter === key}
+                className={`meta relative whitespace-nowrap pb-2.5 transition-colors duration-fast ease-out ${
+                  activeFilter === key ? "text-ink" : "hover:text-ink"
                 }`}
               >
                 {label}
+                {activeFilter === key && (
+                  // Shared layoutId makes the underline slide between tabs
+                  // rather than disappearing and reappearing.
+                  <motion.span
+                    layoutId="filter-underline"
+                    className="absolute inset-x-0 -bottom-px h-px bg-accent"
+                    transition={LAYOUT_SPRING}
+                  />
+                )}
               </button>
             ))}
           </nav>
+          <span className="meta hidden sm:block">
+            {items.length} {items.length === 1 ? "item" : "items"}
+          </span>
         </div>
 
-        {/* Grid */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 auto-rows-[140px] lg:auto-rows-[160px] gap-3 lg:gap-4 grid-flow-dense">
-          {filteredItems.map((item) => (
-            <GridItem key={item.id} item={item} />
-          ))}
-        </div>
+        <Masonry>
+          {(columnWidth) => (
+            <AnimatePresence mode="popLayout" initial={false}>
+              {items.map((item, index) => (
+                <GridItem
+                  key={item.id}
+                  item={item}
+                  columnWidth={columnWidth}
+                  // First row is above the fold at every breakpoint.
+                  priority={index < 4}
+                />
+              ))}
+            </AnimatePresence>
+          )}
+        </Masonry>
 
-        {filteredItems.length === 0 && (
-          <div className="text-center py-12">
-            <p className="text-sm text-gray-500">No items found.</p>
-          </div>
+        {items.length === 0 && (
+          <p className="py-16 text-center text-sm text-muted">Nothing here yet.</p>
         )}
       </div>
 
-      {/* Photo lightbox */}
       <PhotoModal
         photo={selectedPhoto}
         photos={photoMetas}

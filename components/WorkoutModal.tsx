@@ -33,10 +33,12 @@ const SESSION_KEY: Record<WorkoutType, Record<number, string>> = {
   legs: { 3: "legs_a", 6: "legs_b", 0: "legs_a", 1: "legs_a", 2: "legs_a", 4: "legs_b", 5: "legs_b" },
 };
 
-const TYPE_BADGE: Record<WorkoutType, string> = {
-  push: "bg-sky-100 text-sky-700",
-  pull: "bg-emerald-100 text-emerald-700",
-  legs: "bg-amber-100 text-amber-700",
+/** Tinted badge derived from the shared session-type tokens, so it tracks the
+ *  theme instead of assuming a white background. */
+const TYPE_BADGE: Record<WorkoutType, React.CSSProperties> = {
+  push: { backgroundColor: "color-mix(in srgb, var(--push) 18%, transparent)", color: "var(--push)" },
+  pull: { backgroundColor: "color-mix(in srgb, var(--pull) 18%, transparent)", color: "var(--pull)" },
+  legs: { backgroundColor: "color-mix(in srgb, var(--legs) 18%, transparent)", color: "var(--legs)" },
 };
 
 export default function WorkoutModal({ workout, sessions, onClose }: Props) {
@@ -71,25 +73,28 @@ export default function WorkoutModal({ workout, sessions, onClose }: Props) {
 
       {/* Card */}
       <div
-        className="relative bg-white rounded-xl shadow-2xl w-full max-w-sm max-h-[80vh] flex flex-col overflow-hidden"
+        className="relative bg-surface rounded-xl shadow-2xl w-full max-w-sm max-h-[80vh] flex flex-col overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="px-5 pt-5 pb-4 flex items-start justify-between border-b border-gray-100">
+        <div className="px-5 pt-5 pb-4 flex items-start justify-between border-b border-line">
           <div>
             <div className="flex items-center gap-2 mb-1.5">
-              <span className={`text-xs px-2 py-0.5 rounded-full font-medium capitalize ${TYPE_BADGE[workout.type]}`}>
+              <span
+                className="text-xs px-2 py-0.5 rounded-full font-medium capitalize"
+                style={TYPE_BADGE[workout.type]}
+              >
                 {workout.type}
               </span>
               {session && (
-                <span className="text-xs text-gray-400">{session.label}</span>
+                <span className="text-xs text-faint">{session.label}</span>
               )}
             </div>
-            <p className="text-sm text-gray-900">{formattedDate}</p>
+            <p className="text-sm text-ink">{formattedDate}</p>
           </div>
           <button
             onClick={onClose}
-            className="ml-4 flex-shrink-0 text-gray-400 hover:text-gray-700 transition-colors"
+            className="ml-4 flex-shrink-0 text-faint hover:text-ink transition-colors"
             aria-label="Close"
           >
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
@@ -104,22 +109,22 @@ export default function WorkoutModal({ workout, sessions, onClose }: Props) {
             <table className="w-full text-sm">
               <thead>
                 <tr>
-                  <th className="text-left text-xs text-gray-400 font-normal pb-2.5 pr-4">Exercise</th>
-                  <th className="text-right text-xs text-gray-400 font-normal pb-2.5 pr-4 whitespace-nowrap">Sets</th>
-                  <th className="text-right text-xs text-gray-400 font-normal pb-2.5 whitespace-nowrap">Reps</th>
+                  <th className="text-left text-xs text-faint font-normal pb-2.5 pr-4">Exercise</th>
+                  <th className="text-right text-xs text-faint font-normal pb-2.5 pr-4 whitespace-nowrap">Sets</th>
+                  <th className="text-right text-xs text-faint font-normal pb-2.5 whitespace-nowrap">Reps</th>
                 </tr>
               </thead>
               <tbody>
                 {session.exercises.map((ex, i) => (
-                  <tr key={i} className="border-t border-gray-50">
+                  <tr key={i} className="border-t border-line">
                     <td className="py-2.5 pr-4">
-                      <span className="text-gray-900">{ex.name}</span>
+                      <span className="text-ink">{ex.name}</span>
                       {ex.note && (
-                        <span className="block text-xs text-gray-400 mt-0.5">{ex.note}</span>
+                        <span className="block text-xs text-faint mt-0.5">{ex.note}</span>
                       )}
                     </td>
-                    <td className="py-2.5 pr-4 text-right text-gray-500 tabular-nums">{ex.sets}</td>
-                    <td className="py-2.5 text-right text-gray-500 tabular-nums whitespace-nowrap">{ex.reps}</td>
+                    <td className="py-2.5 pr-4 text-right text-muted tabular-nums">{ex.sets}</td>
+                    <td className="py-2.5 text-right text-muted tabular-nums whitespace-nowrap">{ex.reps}</td>
                   </tr>
                 ))}
               </tbody>
@@ -127,13 +132,13 @@ export default function WorkoutModal({ workout, sessions, onClose }: Props) {
           </div>
         ) : (
           <div className="px-5 py-10 text-center">
-            <p className="text-sm text-gray-400">No session data.</p>
+            <p className="text-sm text-faint">No session data.</p>
           </div>
         )}
 
         {/* Footer hint */}
-        <div className="px-5 py-2.5 border-t border-gray-50">
-          <p className="text-xs text-gray-400">Press Esc or click outside to close</p>
+        <div className="px-5 py-2.5 border-t border-line">
+          <p className="text-xs text-faint">Press Esc or click outside to close</p>
         </div>
       </div>
     </div>

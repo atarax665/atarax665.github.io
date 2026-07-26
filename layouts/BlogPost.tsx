@@ -1,6 +1,7 @@
 import React from "react";
-import Image from "next/image";
 import Link from "next/link";
+import Img from "../components/Img";
+import type { ImageRecord } from "../utils/images";
 
 export type BlogPostMeta = {
   title: string;
@@ -8,6 +9,8 @@ export type BlogPostMeta = {
   slug: string;
   date: string;
   photo: string;
+  /** Build-time encoded variants for `photo`, attached by utils/content.ts */
+  imageRecord: ImageRecord | null;
 };
 
 export type BlogPost = {
@@ -27,7 +30,7 @@ const BlogPostLayout = ({
     <div className="mb-8">
       <Link
         href="/blog"
-        className="text-sm text-gray-600 hover:text-gray-900 transition-colors underline"
+        className="text-sm text-muted hover:text-ink transition-colors underline"
       >
         ← Back to Blog
       </Link>
@@ -35,9 +38,9 @@ const BlogPostLayout = ({
 
     {/* Blog Post Header */}
     <div className="mb-8">
-      <h1 className="text-lg text-gray-900 mb-4">{blogPost.meta.title}</h1>
-      <p className="text-sm text-gray-600 mb-4">{blogPost.meta.description}</p>
-      <p className="text-sm text-gray-500">
+      <h1 className="font-display text-[30px] leading-tight text-ink mb-4">{blogPost.meta.title}</h1>
+      <p className="text-sm text-muted mb-4">{blogPost.meta.description}</p>
+      <p className="text-sm text-muted">
         {new Date(blogPost.meta.date).toLocaleDateString("en-US", {
           year: "numeric",
           month: "long",
@@ -48,26 +51,25 @@ const BlogPostLayout = ({
 
     {/* Blog Post Image */}
     <div className="mb-8">
-      <Image
-        src={blogPost.meta.photo}
+      <Img
+        record={blogPost.meta.imageRecord}
         alt={blogPost.meta.title}
-        width={800}
-        height={400}
-        className="w-full h-auto"
         priority
+        className="w-full rounded-lg"
+        sizes="(max-width: 768px) 100vw, 672px"
       />
     </div>
 
     {/* Blog Post Content */}
-    <div className="prose prose-gray max-w-none">
+    <div className="prose max-w-none">
       <div dangerouslySetInnerHTML={{ __html: renderedBlogContent }} />
     </div>
 
     {/* Navigation */}
-    <div className="mt-12 pt-8 border-t border-gray-100">
+    <div className="mt-12 pt-8 border-t border-line">
       <Link
         href="/blog"
-        className="text-sm text-gray-900 hover:text-gray-600 transition-colors underline"
+        className="text-sm text-ink hover:text-muted transition-colors underline"
       >
         ← View all blog posts
       </Link>

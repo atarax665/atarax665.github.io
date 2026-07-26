@@ -3,16 +3,15 @@ import { WorkoutEntry } from "./WorkoutModal";
 
 type WorkoutType = "push" | "pull" | "legs";
 
-const TYPE_COLORS: Record<WorkoutType, string> = {
-  push: "bg-sky-300",
-  pull: "bg-emerald-300",
-  legs: "bg-amber-300",
-};
-
-const TYPE_HOVER: Record<WorkoutType, string> = {
-  push: "hover:bg-sky-400",
-  pull: "hover:bg-emerald-400",
-  legs: "hover:bg-amber-400",
+/**
+ * Session colours come from tokens rather than Tailwind's palette so they
+ * lighten in dark mode; sky/emerald/amber-300 were tuned for a white page and
+ * read as muddy against the dark canvas.
+ */
+const TYPE_VAR: Record<WorkoutType, string> = {
+  push: "var(--push)",
+  pull: "var(--pull)",
+  legs: "var(--legs)",
 };
 
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -97,16 +96,16 @@ export default function WorkoutHeatmap({ workouts, onWorkoutClick }: Props) {
       {/* Stats */}
       <div className="flex gap-8 mb-6">
         <div>
-          <p className="text-xl text-gray-900">{stats.total}</p>
-          <p className="text-xs text-gray-400 mt-0.5">sessions this year</p>
+          <p className="text-xl text-ink">{stats.total}</p>
+          <p className="text-xs text-faint mt-0.5">sessions this year</p>
         </div>
         <div>
-          <p className="text-xl text-gray-900">{stats.thisMonth}</p>
-          <p className="text-xs text-gray-400 mt-0.5">this month</p>
+          <p className="text-xl text-ink">{stats.thisMonth}</p>
+          <p className="text-xs text-faint mt-0.5">this month</p>
         </div>
         <div>
-          <p className="text-xl text-gray-900">{stats.weeklyAvg}</p>
-          <p className="text-xs text-gray-400 mt-0.5">avg / week</p>
+          <p className="text-xl text-ink">{stats.weeklyAvg}</p>
+          <p className="text-xs text-faint mt-0.5">avg / week</p>
         </div>
       </div>
 
@@ -122,7 +121,7 @@ export default function WorkoutHeatmap({ workouts, onWorkoutClick }: Props) {
                 <div
                   key={i}
                   style={{ width: 14, flexShrink: 0 }}
-                  className="text-xs text-gray-400 overflow-visible whitespace-nowrap"
+                  className="text-xs text-faint overflow-visible whitespace-nowrap"
                 >
                   {showLabel ? MONTHS[firstDay.getMonth()] : ""}
                 </div>
@@ -134,7 +133,7 @@ export default function WorkoutHeatmap({ workouts, onWorkoutClick }: Props) {
           {[0, 1, 2, 3, 4, 5, 6].map((dayIndex) => (
             <div key={dayIndex} className="flex items-center">
               <div
-                className="text-right pr-2 text-xs text-gray-400 flex-shrink-0 select-none"
+                className="text-right pr-2 text-xs text-faint flex-shrink-0 select-none"
                 style={{ width: 32, lineHeight: "12px" }}
               >
                 {dayIndex % 2 === 0 ? DAY_LABELS[dayIndex] : ""}
@@ -163,8 +162,13 @@ export default function WorkoutHeatmap({ workouts, onWorkoutClick }: Props) {
                       key={weekIndex}
                       title={`${dateStr} · ${type}`}
                       onClick={() => onWorkoutClick(entry)}
-                      className={`flex-shrink-0 rounded-sm transition-colors cursor-pointer ${TYPE_COLORS[type]} ${TYPE_HOVER[type]}`}
-                      style={{ width: 12, height: 12, margin: 1 }}
+                      className="flex-shrink-0 cursor-pointer rounded-sm transition-[filter,transform] duration-fast ease-out hover:brightness-125 hover:scale-125"
+                      style={{
+                        width: 12,
+                        height: 12,
+                        margin: 1,
+                        backgroundColor: TYPE_VAR[type],
+                      }}
                     />
                   );
                 }
@@ -173,7 +177,7 @@ export default function WorkoutHeatmap({ workouts, onWorkoutClick }: Props) {
                   <div
                     key={weekIndex}
                     title={`${dateStr} · rest`}
-                    className="flex-shrink-0 rounded-sm bg-gray-100"
+                    className="flex-shrink-0 rounded-sm bg-line"
                     style={{ width: 12, height: 12, margin: 1 }}
                   />
                 );
@@ -185,17 +189,20 @@ export default function WorkoutHeatmap({ workouts, onWorkoutClick }: Props) {
 
       {/* Legend */}
       <div className="flex items-center gap-4 mt-3 flex-wrap">
-        <span className="text-xs text-gray-400">Click a session to see exercises.</span>
-        <span className="text-xs text-gray-300">·</span>
+        <span className="text-xs text-faint">Click a session to see exercises.</span>
+        <span className="text-xs text-faint">·</span>
         {(["push", "pull", "legs"] as WorkoutType[]).map((type) => (
           <div key={type} className="flex items-center gap-1.5">
-            <div className={`w-3 h-3 rounded-sm flex-shrink-0 ${TYPE_COLORS[type]}`} />
-            <span className="text-xs text-gray-500 capitalize">{type}</span>
+            <div
+              className="h-3 w-3 flex-shrink-0 rounded-sm"
+              style={{ backgroundColor: TYPE_VAR[type] }}
+            />
+            <span className="text-xs text-muted capitalize">{type}</span>
           </div>
         ))}
         <div className="flex items-center gap-1.5">
-          <div className="w-3 h-3 rounded-sm flex-shrink-0 bg-gray-100" />
-          <span className="text-xs text-gray-500">Rest</span>
+          <div className="w-3 h-3 rounded-sm flex-shrink-0 bg-line" />
+          <span className="text-xs text-muted">Rest</span>
         </div>
       </div>
     </div>

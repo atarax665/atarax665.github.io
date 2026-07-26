@@ -1,0 +1,18 @@
+{
+  "name": "Abhinav Anand",
+  "short_name": "Abhinav",
+  "description": "Software engineer in Patna. Photographs, writing, books and training.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#FAF8F5",
+  "theme_color": "#FAF8F5",
+  "icons": [
+    {
+      "src": "/avatar.jpeg",
+      "sizes": "404x530",
+      "type": "image/jpeg",
+      "purpose": "any"
+    }
+  ]
+}

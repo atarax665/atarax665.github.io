@@ -2,7 +2,25 @@ import { promises as fs } from "fs";
 import path from "path";
 import matter from "gray-matter";
 import { renderMarkdownToHTML } from "./markdown";
+import { getImage, type ImageRecord } from "./images";
 import { PersonalInfo, NavigationItem, SidebarData } from "../components/Sidebar";
+
+/** Frontmatter plus its resolved image variants. */
+type MetaWithImage = Record<string, any> & { imageRecord: ImageRecord | null };
+
+/**
+ * Attach encoded image variants to a frontmatter object.
+ *
+ * The explicit return type matters: spreading gray-matter's index-signature
+ * `data` into an object literal makes TypeScript forget every dynamic key, so
+ * `meta.date` and `meta.slug` would stop type-checking at the call sites.
+ */
+async function withImage(
+  data: Record<string, any>,
+  src?: string
+): Promise<MetaWithImage> {
+  return { ...data, imageRecord: await getImage(src) };
+}
 
 const CONTENT_DIR = "_content";
 const PAGES_DIR = "_pages";
@@ -34,8 +52,11 @@ export async function getSidebarData(): Promise<SidebarData> {
   const navFile = await fs.readFile(navPath, "utf8");
   const navParsed = matter(navFile);
 
+  const personalInfo = aboutParsed.data as PersonalInfo;
+
   return {
-    personalInfo: aboutParsed.data as PersonalInfo,
+    personalInfo,
+    avatarImage: await getImage(personalInfo.avatar),
     navigation: navParsed.data.navigation as NavigationItem[],
     aboutContent,
   };
@@ -75,7 +96,9 @@ export async function getBlogPosts() {
 
       return {
         content: parsed.content,
-        meta: parsed.data,
+        // Cover image variants resolved at build time, so the manifest never
+        // ships to the client.
+        meta: await withImage(parsed.data, parsed.data.photo),
       };
     })
   );
@@ -102,7 +125,7 @@ export async function getPhotos() {
 
       return {
         content: parsed.content,
-        meta: parsed.data,
+        meta: await withImage(parsed.data, parsed.data.image),
       };
     })
   );
@@ -122,7 +145,7 @@ export async function getPhotoBySlug(slug: string) {
     const renderedContent = renderMarkdownToHTML(parsed.content);
 
     return {
-      meta: parsed.data,
+      meta: await withImage(parsed.data, parsed.data.image),
       content: parsed.content,
       renderedContent,
     };
