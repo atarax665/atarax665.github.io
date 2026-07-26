@@ -73,13 +73,13 @@ export default function Workout({
 
         {/* Header */}
         <div className="mb-10">
-          <h1 className="text-lg text-gray-900 mb-1">{pageContent.meta.title}</h1>
-          <p className="text-sm text-gray-500">{pageContent.meta.description}</p>
+          <h1 className="font-display text-[30px] leading-tight text-ink mb-1">{pageContent.meta.title}</h1>
+          <p className="text-sm text-muted">{pageContent.meta.description}</p>
         </div>
 
         {/* Consistency */}
         <section className="mb-10">
-          <h2 className="text-xs text-gray-400 uppercase tracking-wide mb-4">Consistency</h2>
+          <h2 className="meta mb-4">Consistency</h2>
           <WorkoutHeatmap
             workouts={workoutData.workouts}
             onWorkoutClick={setSelectedWorkout}
@@ -88,7 +88,7 @@ export default function Workout({
 
         {/* Strength Progress */}
         <section className="mb-10">
-          <h2 className="text-xs text-gray-400 uppercase tracking-wide mb-4">Strength Progress</h2>
+          <h2 className="meta mb-4">Strength Progress</h2>
           <div className="space-y-5">
             {workoutData.prs.map((pr) => {
               const range = pr.goal - pr.start;
@@ -99,27 +99,27 @@ export default function Workout({
               return (
                 <div key={pr.lift}>
                   <div className="flex items-baseline justify-between mb-1.5">
-                    <span className="text-sm text-gray-900">{pr.lift}</span>
+                    <span className="text-sm text-ink">{pr.lift}</span>
                     <div className="flex items-baseline gap-2">
-                      <span className="text-sm text-gray-900">
+                      <span className="text-sm text-ink">
                         {pr.current} {pr.unit}
                       </span>
-                      <span className="text-xs text-gray-400">
+                      <span className="text-xs text-faint">
                         / {pr.goal} {pr.unit} goal
                       </span>
                     </div>
                   </div>
-                  <div className="relative h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                  <div className="relative h-1.5 bg-line rounded-full overflow-hidden">
                     <div
-                      className="absolute left-0 top-0 h-full bg-gray-800 rounded-full"
+                      className="absolute left-0 top-0 h-full bg-accent rounded-full"
                       style={{ width: `${progressPct}%` }}
                     />
                   </div>
                   <div className="flex justify-between mt-1">
-                    <span className="text-xs text-gray-400">
+                    <span className="text-xs text-faint">
                       {pr.start} {pr.unit} start
                     </span>
-                    <span className="text-xs text-gray-400">
+                    <span className="text-xs text-faint">
                       +{gained} {pr.unit} gained · {remaining} {pr.unit} to go
                     </span>
                   </div>
@@ -131,30 +131,30 @@ export default function Workout({
 
         {/* Training Philosophy */}
         <section className="mb-10">
-          <h2 className="text-xs text-gray-400 uppercase tracking-wide mb-4">Training Philosophy</h2>
+          <h2 className="meta mb-4">Training Philosophy</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {PHILOSOPHY.map((item) => (
               <div
                 key={item.title}
-                className="bg-gray-50 rounded-lg p-4"
+                className="bg-surface rounded-lg p-4"
               >
-                <p className="text-sm text-gray-900 mb-1.5">{item.title}</p>
-                <p className="text-xs text-gray-500 leading-relaxed">{item.body}</p>
+                <p className="text-sm text-ink mb-1.5">{item.title}</p>
+                <p className="text-xs text-muted leading-relaxed">{item.body}</p>
               </div>
             ))}
           </div>
         </section>
 
-        <hr className="border-gray-100 mb-8" />
+        <hr className="border-line mb-8" />
 
         {/* Routine — markdown content */}
-        <div className="prose prose-gray max-w-none">
+        <div className="prose max-w-none">
           <div dangerouslySetInnerHTML={{ __html: pageContent.renderedContent }} />
         </div>
 
         {pageContent.meta.lastUpdated && (
-          <div className="mt-8 pt-4 border-t border-gray-100">
-            <p className="text-sm text-gray-500">
+          <div className="mt-8 pt-4 border-t border-line">
+            <p className="text-sm text-muted">
               Last updated:{" "}
               {new Date(pageContent.meta.lastUpdated).toLocaleDateString("en-US", {
                 year: "numeric",

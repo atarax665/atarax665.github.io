@@ -34,3 +34,9 @@ next-env.d.ts
 
 # brainstorming mockups
 .superpowers/
+
+# generated image pipeline output
+/public/_img/
+/generated/
+/public/sw.js
+.image-cache.json

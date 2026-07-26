@@ -4,106 +4,146 @@ module.exports = {
     "./pages/**/*.{js,ts,jsx,tsx}",
     "./components/**/*.{js,ts,jsx,tsx}",
     "./layouts/**/*.{js,ts,jsx,tsx}",
+    "./lib/**/*.{js,ts,jsx,tsx}",
     "./utils/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
     extend: {
+      // Every colour resolves to a token in styles/tokens.css, so switching
+      // [data-theme] retints utilities and raw CSS together and neither can
+      // drift from the other.
+      colors: {
+        bg: "var(--bg)",
+        surface: "var(--surface)",
+        ink: "var(--ink)",
+        muted: "var(--muted)",
+        faint: "var(--faint)",
+        accent: "var(--accent)",
+        line: "var(--line)",
+      },
+      borderColor: { DEFAULT: "var(--line)" },
+      fontFamily: {
+        sans: ["var(--font-sans)", "ui-sans-serif", "system-ui", "sans-serif"],
+        serif: ["var(--font-serif)", "Georgia", "serif"],
+        mono: ["var(--font-mono)", "ui-monospace", "monospace"],
+      },
+      borderRadius: {
+        DEFAULT: "var(--radius)",
+        lg: "var(--radius-lg)",
+      },
+      transitionTimingFunction: { out: "var(--ease-out)" },
+      transitionDuration: {
+        fast: "var(--motion-fast)",
+        base: "var(--motion-base)",
+        slow: "var(--motion-slow)",
+      },
       typography: {
         DEFAULT: {
           css: {
-            fontSize: '14px',
-            lineHeight: '1.6',
-            color: '#374151', // gray-700
-            maxWidth: 'none',
+            fontSize: "15px",
+            lineHeight: "1.7",
+            color: "var(--ink)",
+            maxWidth: "none",
             h1: {
-              fontSize: '18px',
-              fontWeight: '400',
-              color: '#111827', // gray-900
-              marginTop: '0',
-              marginBottom: '1.5rem',
+              fontFamily: "var(--font-serif), Georgia, serif",
+              fontSize: "30px",
+              fontWeight: "400",
+              letterSpacing: "-0.015em",
+              color: "var(--ink)",
+              marginTop: "0",
+              marginBottom: "1.25rem",
             },
             h2: {
-              fontSize: '14px',
-              fontWeight: '400',
-              color: '#111827', // gray-900
-              marginTop: '2rem',
-              marginBottom: '0.75rem',
+              fontFamily: "var(--font-serif), Georgia, serif",
+              fontSize: "22px",
+              fontWeight: "400",
+              color: "var(--ink)",
+              marginTop: "2.25rem",
+              marginBottom: "0.75rem",
             },
             h3: {
-              fontSize: '14px',
-              fontWeight: '400',
-              color: '#111827', // gray-900
-              marginTop: '1.5rem',
-              marginBottom: '0.5rem',
+              fontFamily: "var(--font-serif), Georgia, serif",
+              fontSize: "18px",
+              fontWeight: "400",
+              color: "var(--ink)",
+              marginTop: "1.75rem",
+              marginBottom: "0.5rem",
             },
-            p: {
-              fontSize: '14px',
-              marginTop: '0',
-              marginBottom: '1rem',
-            },
+            p: { marginTop: "0", marginBottom: "1.1rem", color: "var(--ink)" },
             a: {
-              color: '#111827', // gray-900
-              textDecoration: 'underline',
-              fontWeight: '400',
-              '&:hover': {
-                color: '#4B5563', // gray-600
-              },
+              color: "var(--accent)",
+              textDecoration: "underline",
+              textUnderlineOffset: "3px",
+              textDecorationThickness: "1px",
+              textDecorationColor: "var(--line)",
+              fontWeight: "400",
+              "&:hover": { textDecorationColor: "var(--accent)" },
             },
-            strong: {
-              fontWeight: '400',
-              color: '#111827', // gray-900
+            strong: { fontWeight: "500", color: "var(--ink)" },
+            blockquote: {
+              fontFamily: "var(--font-serif), Georgia, serif",
+              fontStyle: "normal",
+              fontSize: "18px",
+              color: "var(--muted)",
+              borderLeftColor: "var(--accent)",
+              paddingLeft: "1.25rem",
             },
-            ul: {
-              marginTop: '1rem',
-              marginBottom: '1rem',
-            },
-            li: {
-              fontSize: '14px',
-              marginTop: '0.25rem',
-              marginBottom: '0.25rem',
-            },
+            li: { marginTop: "0.2rem", marginBottom: "0.2rem" },
+            "ul > li::marker": { color: "var(--faint)" },
+            "ol > li::marker": { color: "var(--faint)" },
             hr: {
-              borderColor: '#F3F4F6', // gray-100
-              marginTop: '2rem',
-              marginBottom: '2rem',
+              borderColor: "var(--line)",
+              marginTop: "2.5rem",
+              marginBottom: "2.5rem",
+            },
+            img: { borderRadius: "var(--radius-lg)" },
+            figcaption: {
+              fontFamily: "var(--font-mono), ui-monospace, monospace",
+              fontSize: "11px",
+              letterSpacing: "0.11em",
+              textTransform: "uppercase",
+              color: "var(--faint)",
             },
             pre: {
-              backgroundColor: '#F9FAFB', // gray-50
-              color: '#1F2937', // gray-800
-              borderRadius: '0.5rem',
-              padding: '1rem',
-              overflowX: 'auto',
-              fontSize: '13px',
-              lineHeight: '1.7',
-              border: '1px solid #E5E7EB', // gray-200
-              marginTop: '1rem',
-              marginBottom: '1rem',
+              backgroundColor: "var(--surface)",
+              color: "var(--ink)",
+              borderRadius: "var(--radius-lg)",
+              padding: "1rem",
+              overflowX: "auto",
+              fontSize: "13px",
+              lineHeight: "1.7",
+              border: "1px solid var(--line)",
             },
             code: {
-              backgroundColor: '#F3F4F6', // gray-100
-              color: '#1F2937', // gray-800
-              borderRadius: '0.25rem',
-              padding: '0.125rem 0.375rem',
-              fontWeight: '400',
-              fontSize: '13px',
-              '&::before': { content: 'none' },
-              '&::after': { content: 'none' },
+              backgroundColor: "var(--surface)",
+              color: "var(--ink)",
+              border: "1px solid var(--line)",
+              borderRadius: "4px",
+              padding: "0.1rem 0.35rem",
+              fontWeight: "400",
+              fontSize: "13px",
+              "&::before": { content: "none" },
+              "&::after": { content: "none" },
             },
-            'pre code': {
-              backgroundColor: 'transparent',
-              borderRadius: '0',
-              padding: '0',
-              color: 'inherit',
-              fontSize: 'inherit',
-              '&::before': { content: 'none' },
-              '&::after': { content: 'none' },
+            "pre code": {
+              backgroundColor: "transparent",
+              border: "none",
+              borderRadius: "0",
+              padding: "0",
+              color: "inherit",
+              fontSize: "inherit",
             },
+            table: { fontSize: "14px" },
+            "thead th": {
+              color: "var(--ink)",
+              borderBottomColor: "var(--line)",
+              fontWeight: "500",
+            },
+            "tbody td": { borderBottomColor: "var(--line)" },
           },
         },
       },
     },
   },
-  plugins: [
-    require('@tailwindcss/typography'),
-  ],
+  plugins: [require("@tailwindcss/typography")],
 };

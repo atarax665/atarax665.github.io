@@ -1,11 +1,14 @@
 import React from "react";
-import Image from "next/image";
 import Link from "next/link";
+import Img from "../components/Img";
+import type { ImageRecord } from "../utils/images";
 
 export type PhotoMeta = {
   title: string;
   slug: string;
   image: string;
+  /** Build-time encoded variants for `image`, attached by utils/content.ts */
+  imageRecord: ImageRecord | null;
   date: string;
   location?: string;
   camera?: string;
@@ -27,7 +30,7 @@ const PhotoLayout = ({ photo }: { photo: Photo }) => (
     <div className="mb-8">
       <Link
         href="/"
-        className="text-sm text-gray-600 hover:text-gray-900 transition-colors underline"
+        className="text-sm text-muted hover:text-ink transition-colors underline"
       >
         ← Back to Home
       </Link>
@@ -35,11 +38,11 @@ const PhotoLayout = ({ photo }: { photo: Photo }) => (
 
     {/* Photo Header */}
     <div className="mb-8">
-      <h1 className="text-lg text-gray-900 mb-4">{photo.meta.title}</h1>
+      <h1 className="font-display text-[30px] leading-tight text-ink mb-4">{photo.meta.title}</h1>
       {photo.meta.description && (
-        <p className="text-sm text-gray-600 mb-4">{photo.meta.description}</p>
+        <p className="text-sm text-muted mb-4">{photo.meta.description}</p>
       )}
-      <div className="flex flex-wrap gap-4 text-sm text-gray-500">
+      <div className="flex flex-wrap gap-4 text-sm text-muted">
         <span>
           {new Date(photo.meta.date).toLocaleDateString("en-US", {
             year: "numeric",
@@ -53,21 +56,19 @@ const PhotoLayout = ({ photo }: { photo: Photo }) => (
 
     {/* Photo Image */}
     <div className="mb-8">
-      <div className="relative w-full bg-gray-100 rounded-lg overflow-hidden flex items-center justify-center min-h-[400px] max-h-[80vh]">
-        <Image
-          src={photo.meta.image}
-          alt={photo.meta.title}
-          width={1200}
-          height={800}
-          className="max-w-full max-h-full w-auto h-auto object-contain"
-          priority
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 1200px"
-        />
-      </div>
+      <Img
+        record={photo.meta.imageRecord}
+        alt={photo.meta.title}
+        priority
+        fit="contain"
+        className="w-full rounded-lg"
+        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 1200px"
+        style={{ maxHeight: "80vh" }}
+      />
     </div>
 
     {/* Photo Content */}
-    <div className="prose prose-gray max-w-none mb-8">
+    <div className="prose max-w-none mb-8">
       <div dangerouslySetInnerHTML={{ __html: photo.renderedContent }} />
     </div>
 
@@ -78,7 +79,7 @@ const PhotoLayout = ({ photo }: { photo: Photo }) => (
           {photo.meta.tags.map((tag) => (
             <span
               key={tag}
-              className="px-2 py-1 text-sm text-gray-600 bg-gray-100 border border-gray-200"
+              className="px-2 py-1 text-sm text-muted bg-line border border-line"
             >
               {tag}
             </span>
@@ -88,10 +89,10 @@ const PhotoLayout = ({ photo }: { photo: Photo }) => (
     )}
 
     {/* Navigation */}
-    <div className="mt-12 pt-8 border-t border-gray-100">
+    <div className="mt-12 pt-8 border-t border-line">
       <Link
         href="/"
-        className="text-sm text-gray-900 hover:text-gray-600 transition-colors underline"
+        className="text-sm text-ink hover:text-muted transition-colors underline"
       >
         ← View all photos
       </Link>

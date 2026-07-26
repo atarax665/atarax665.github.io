@@ -1,6 +1,10 @@
 import React from "react";
-import Image from "next/image";
 import Link from "next/link";
+import { motion } from "motion/react";
+import Img from "./Img";
+import { rowSpan } from "../lib/masonry";
+import { LAYOUT_SPRING, fadeRise } from "../lib/motion";
+import type { ImageRecord } from "../utils/images";
 
 export type GridItemType = "photo" | "blog" | "text" | "link";
 
@@ -10,115 +14,131 @@ export type GridItemData = {
   title?: string;
   description?: string;
   image?: string;
+  imageRecord?: ImageRecord | null;
   href?: string;
   content?: string;
   date?: string;
-  size?: "small" | "medium" | "large";
   onClick?: () => void;
 };
 
-const GridItem = ({ item }: { item: GridItemData }) => {
-  const sizeClasses = {
-    small: "col-span-1",
-    medium: "col-span-2 row-span-2",
-    large: "col-span-2 md:col-span-3 row-span-2",
-  };
+/** Rows an article card occupies — fixed, since it has no intrinsic ratio. */
+const ARTICLE_SPAN = 13;
 
-  const baseClasses = `${sizeClasses[item.size || "small"]} hover:opacity-75 transition-opacity relative z-10`;
+const GridItem = ({
+  item,
+  columnWidth,
+  priority = false,
+}: {
+  item: GridItemData;
+  columnWidth: number;
+  /** Eager-load this tile. Set on the first row so the LCP image is not lazy. */
+  priority?: boolean;
+}) => {
+  const span =
+    item.type === "photo" && item.imageRecord
+      ? rowSpan(item.imageRecord.width, item.imageRecord.height, columnWidth)
+      : ARTICLE_SPAN;
 
-  const content = (
-    <div className="w-full h-full flex flex-col relative overflow-hidden rounded-lg">
-      {item.type === "photo" && item.image && (
-        <div className="relative w-full h-full">
-          <Image
-            src={item.image}
-            alt={item.title || "Photo"}
-            fill
-            className="object-cover"
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          />
+  const content =
+    item.type === "photo" && item.imageRecord ? (
+      <figure className="relative m-0 h-full w-full overflow-hidden rounded-lg bg-surface">
+        <Img
+          record={item.imageRecord}
+          alt={item.title || "Photo"}
+          ratio={false}
+          priority={priority}
+          className="h-full w-full"
+          imgClassName="transition-transform duration-slow ease-out group-hover:scale-[1.04]"
+          sizes="(max-width: 768px) 50vw, (max-width: 1280px) 33vw, 25vw"
+        />
+        {item.title && (
+          <figcaption className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/75 via-black/25 to-transparent px-3 pb-2.5 pt-8">
+            <span className="font-display text-[15px] leading-snug text-white">
+              {item.title}
+            </span>
+          </figcaption>
+        )}
+      </figure>
+    ) : (
+      <article className="flex h-full w-full flex-col justify-between rounded-lg border border-line bg-surface p-4 transition-colors duration-base ease-out group-hover:border-accent/40">
+        <div>
           {item.title && (
-            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-3 pt-6">
-              <p className="text-sm text-white font-medium">{item.title}</p>
-            </div>
-          )}
-        </div>
-      )}
-
-      {item.type === "blog" && (
-        <div className="p-4 bg-gray-50 h-full flex flex-col justify-between relative z-10">
-          <div>
-            <h3 className="text-sm text-gray-900 mb-2 line-clamp-2 font-medium">
+            <h3 className="font-display mb-1.5 line-clamp-3 text-[17px] leading-snug text-ink">
               {item.title}
             </h3>
-            <p className="text-sm text-gray-600 mb-2 line-clamp-3">
+          )}
+          {item.description && (
+            <p className="line-clamp-4 text-[13px] leading-relaxed text-muted">
               {item.description}
             </p>
-          </div>
-          {item.date && (
-            <p className="text-xs text-gray-500 mt-auto">
-              {new Date(item.date).toLocaleDateString("en-US", {
-                month: "short",
-                day: "numeric",
-              })}
+          )}
+          {item.content && (
+            <p className="line-clamp-4 text-[13px] leading-relaxed text-muted">
+              {item.content}
             </p>
           )}
         </div>
-      )}
+        {item.date && (
+          <p className="meta mt-3">
+            {new Date(item.date).toLocaleDateString("en-US", {
+              month: "short",
+              day: "numeric",
+              year: "numeric",
+            })}
+          </p>
+        )}
+      </article>
+    );
 
-      {item.type === "text" && (
-        <div className="p-4 bg-white border border-gray-100 h-full flex flex-col justify-center relative z-10">
-          {item.title && (
-            <h3 className="text-sm text-gray-900 mb-2 font-medium">
-              {item.title}
-            </h3>
-          )}
-          {item.content && (
-            <p className="text-sm text-gray-600 line-clamp-4">{item.content}</p>
-          )}
-        </div>
-      )}
+  // `group` drives the image zoom on hover. This replaces the old
+  // `hover:opacity-75`, which faded the caption along with the photo.
+  const className = "group relative block";
+  const style = { gridRowEnd: `span ${span}` };
 
-      {item.type === "link" && (
-        <div className="p-4 bg-gray-900 text-white h-full flex flex-col justify-center relative z-10">
-          <h3 className="text-sm mb-1 font-medium">{item.title}</h3>
-          {item.description && (
-            <p className="text-sm opacity-75">{item.description}</p>
-          )}
-        </div>
-      )}
-    </div>
-  );
+  // `layout` is what makes tiles glide to new positions when the filter
+  // changes instead of teleporting. It needs a stable key, which the caller
+  // supplies from item.id.
+  const motionProps = {
+    layout: true as const,
+    variants: fadeRise,
+    transition: LAYOUT_SPRING,
+    className,
+    style,
+  };
 
-  // onClick + href: intercept navigation (e.g. photo modal). href still
-  // present so right-click → "Open in new tab" keeps working.
+  // href + onClick together: the click opens the lightbox, while the href keeps
+  // right-click "Open in new tab" working.
   if (item.href && item.onClick) {
     return (
-      <a
+      <motion.a
+        {...motionProps}
         href={item.href}
-        className={baseClasses}
-        onClick={(e) => { e.preventDefault(); item.onClick!(); }}
+        onClick={(e) => {
+          e.preventDefault();
+          item.onClick!();
+        }}
       >
         {content}
-      </a>
+      </motion.a>
     );
   }
 
   if (item.href) {
     return (
-      <Link href={item.href} className={baseClasses}>
-        {content}
+      <Link href={item.href} legacyBehavior passHref>
+        <motion.a {...motionProps}>{content}</motion.a>
       </Link>
     );
   }
 
   return (
-    <div
-      className={`${baseClasses}${item.onClick ? " cursor-pointer" : ""}`}
+    <motion.div
+      {...motionProps}
+      className={`${className}${item.onClick ? " cursor-pointer" : ""}`}
       onClick={item.onClick}
     >
       {content}
-    </div>
+    </motion.div>
   );
 };
 

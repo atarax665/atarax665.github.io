@@ -30,8 +30,8 @@ export default function BlogPage({
     <MainLayout sidebarData={sidebarData}>
       <div className="max-w-4xl">
         <div className="mb-8">
-          <h1 className="text-lg text-gray-900 mb-4">Blog</h1>
-          <p className="text-sm text-gray-600">
+          <h1 className="font-display text-[30px] leading-tight text-ink mb-4">Blog</h1>
+          <p className="text-sm text-muted">
             Thoughts, ideas, and learnings.
           </p>
         </div>
@@ -43,14 +43,14 @@ export default function BlogPage({
               title={meta.title}
               description={meta.description}
               slug={meta.slug}
-              photo={meta.photo}
+              imageRecord={meta.imageRecord}
             />
           ))}
         </div>
 
         {blogPosts.length === 0 && (
           <div className="text-center py-12">
-            <p className="text-sm text-gray-500">No blog posts found.</p>
+            <p className="text-sm text-muted">No blog posts found.</p>
           </div>
         )}
       </div>

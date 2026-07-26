@@ -1,0 +1,68 @@
+/**
+ * Design tokens — the single source of truth for colour, motion and radii.
+ *
+ * Tailwind's config maps its colour names onto these variables, so utilities
+ * and hand-written CSS cannot drift apart, and swapping [data-theme] retints
+ * the entire site without any component knowing about themes.
+ */
+
+:root {
+  /* Warm editorial, light */
+  --bg: #faf8f5;
+  --surface: #ffffff;
+  --ink: #1a1815;
+  --muted: #6b655c;
+  --faint: #a39c92;
+  --accent: #9a4b2c;
+  --line: rgba(26, 24, 21, 0.11);
+  --overlay: rgba(12, 10, 8, 0.55);
+
+  /* Motion. Referenced by lib/motion.ts and by CSS transitions alike. */
+  --motion-fast: 140ms;
+  --motion-base: 260ms;
+  --motion-slow: 480ms;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+
+  --radius: 6px;
+  --radius-lg: 12px;
+
+  /* Workout session types. Tokenised because the original Tailwind
+     sky/emerald/amber-300 were tuned for a white page and turn muddy and
+     low-contrast on the dark canvas. */
+  --push: #4a8fc4;
+  --pull: #4f9d78;
+  --legs: #c08a3e;
+
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  --bg: #12110f;
+  --surface: #1b1917;
+  --ink: #f5f2ed;
+  --muted: #a19a90;
+  --faint: #6f6860;
+  --accent: #c97a54;
+  --line: rgba(245, 242, 237, 0.13);
+  --overlay: rgba(0, 0, 0, 0.7);
+
+  /* Lifted for legibility against the dark canvas. */
+  --push: #6fb3e0;
+  --pull: #6cc39b;
+  --legs: #e0b063;
+
+  color-scheme: dark;
+}
+
+/* Users who ask for less motion get none of it, everywhere, including any
+   CSS transition a component defines locally. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

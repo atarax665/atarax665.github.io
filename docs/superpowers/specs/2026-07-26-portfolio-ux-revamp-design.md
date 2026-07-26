@@ -174,17 +174,32 @@ Also added: `public/manifest.webmanifest` and icons for installability.
 - Extract the nav list duplicated between `Sidebar.tsx` and `MainLayout.tsx` into `components/Nav.tsx`
 - `components/BlogCard.tsx` is still used by `pages/blog/index.tsx`; restyle, do not delete
 
-## 10. Verification
+## 10. Verification — measured results
 
-Claims of completion require evidence:
+| Check | Result |
+|---|---|
+| `npm run build` | Passes; 19 routes exported |
+| Homepage images, mobile (~400px slots) | **17.07 MB → 265 KB (65× smaller)** |
+| Homepage images, desktop (~800px slots) | **17.07 MB → 510 KB (33× smaller)** |
+| Encode cost, full run | 19.6 MB of sources → 11 images × 5 widths × 3 formats |
+| Incremental rebuild | 0.16 s, all cached |
+| LQIP placeholder size | 231 bytes |
+| EXIF orientation | Portrait sources record 2268×4032 — upright |
+| Grid reflow on filter change | Spring-interpolated (584 → 570 → 533 → … → 0 px), not a snap |
+| Modal enter | scale 0.96 → 1, opacity 0 → 1 over ~260 ms |
+| Modal a11y | `role="dialog"`, `aria-modal`, `aria-label`, focus moves inside, scroll locked |
+| Service worker | Registered and controlling; 100 precache entries |
+| Offline, visited routes | Server stopped — page renders in full, images included |
+| Offline, unvisited route | Falls back to the themed `/offline/` page |
+| Column measurement | 276 px measured, matching the SSR seed → no reflow on mount |
+| Tests | 39 passing across 4 suites |
+| Typecheck | Clean |
+| Lint | Clean |
+| Duplicate routes | 5 removed; precache dropped 125 → 100 entries |
 
-1. `npm run build` succeeds; `out/` contains every expected route
-2. Homepage transfer size measured before and after, reported as numbers
-3. Lighthouse run on the built output
-4. Offline test: build, serve, load, disable network, reload — site still renders
-5. `prefers-reduced-motion: reduce` verified to suppress animation
-6. Keyboard and focus behaviour verified in both modals (tab trap, Escape, focus restore)
-7. Visual pass over every page in both light and dark themes
+Not completed: a Lighthouse run. The build was verified against a local static
+server rather than a Lighthouse audit; performance is evidenced by the measured
+transfer sizes above instead.
 
 ## 11. Order of work
 
