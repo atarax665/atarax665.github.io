@@ -13,11 +13,11 @@ _This is a [now page](https://nownownow.com/about), inspired by Derek Sivers._
 
 **Location**: Patna, BR, IN
 
-**Reading**: Diwar m Ek Kidki Rehti Thi by _Vinod Kumar Shukl_
+**Reading**: Surrounded By Idiots by _Thomas Erikson_
 
-**Exercise**: Close to 100kg bench press, will be attempting soon. Trying to get past 150kgs squat.
+**Exercise**: Close to 110Kgs bench press, will be attempting soon. Trying to get past 185kgs squat.
 
-**New Found Interests**: Music (Singing and playing ukulele)
+**New Found Interests**: Video Editing (Trying to grow [abhinav.hobbies](https://www.instagram.com/abhinav.hobbies/))
 
 # Current Focus
 
@@ -27,7 +27,7 @@ _This is a [now page](https://nownownow.com/about), inspired by Derek Sivers._
 
 ### Fitness
 
-- On a 10 week program to improve my SBD total.
+- On a 8 week program to improve my SBD total.
 
 ### Mental
 
@@ -37,7 +37,7 @@ _This is a [now page](https://nownownow.com/about), inspired by Derek Sivers._
 
 ## Personal Projects
 
-- Wrap-up and open source my golang scaffolding tool.
+- Building an OpenRouter alternative.
 
 ## Open Source Contributions
 

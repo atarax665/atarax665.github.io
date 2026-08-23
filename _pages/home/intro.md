@@ -4,4 +4,6 @@ slug: "intro"
 lastUpdated: "2026-04-12"
 ---
 
-Hi, my name is **Abhinav Anand**. I'm a software engineer living in Patna, India. I work remotely, and when I'm not coding, I'm likely at the gym or immersed in a good book. Fitness keeps me grounded, and reading fuels my curiosity beyond the screen. Sometimes I write, draw or sing. Here's what I'm up to [now](/now).
+Hi, this is **Abhinav Anand**. I'm a full-stack engineer at Swiggy, on the team behind [Assure](https://apps.apple.com/in/app/assure-restaurant-essentials/id6747116183). An everything engineer, comfortable anywhere between the database and the button.
+
+Outside work it's the gym and whatever book I'm halfway through. Here's what I'm up to [now](/now).
